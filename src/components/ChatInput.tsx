@@ -1,135 +1,77 @@
 // @ts-nocheck
-// @ts-nocheck
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { STUDY_MODES } from "@/lib/models";
 
 type Props = {
-  onSend: (message: string, studyMode: string | null) => void;
+  onSend: (text: string) => void;
   onImageRequest: (prompt: string) => void;
   disabled: boolean;
-  studyMode: string | null;
-  onStudyModeChange: (mode: string | null) => void;
+  isRecording: boolean;
+  onToggleMic: () => void;
 };
 
-export function ChatInput({ onSend, onImageRequest, disabled, studyMode, onStudyModeChange }: Props) {
+export function ChatInput({ onSend, onImageRequest, disabled, isRecording, onToggleMic }: Props) {
   const [text, setText] = useState("");
-  const [showModes, setShowModes] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const ref = useRef(null);
 
-  // Auto-resize textarea
   useEffect(() => {
-    const ta = textareaRef.current;
-    if (!ta) return;
+    const ta = ref.current; if (!ta) return;
     ta.style.height = "auto";
-    ta.style.height = Math.min(ta.scrollHeight, 200) + "px";
+    ta.style.height = Math.min(ta.scrollHeight, 180) + "px";
   }, [text]);
 
   function submit() {
-    const trimmed = text.trim();
-    if (!trimmed || disabled) return;
-
-    // Detect /image command
-    if (trimmed.toLowerCase().startsWith("/image ")) {
-      onImageRequest(trimmed.slice(7).trim());
-      setText("");
-      return;
-    }
-
-    onSend(trimmed, studyMode);
-    setText("");
+    const t = text.trim(); if (!t || disabled) return;
+    if (t.toLowerCase().startsWith("/image ")) { onImageRequest(t.slice(7).trim()); setText(""); return; }
+    onSend(t); setText("");
   }
 
-  function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      submit();
-    }
+  function onKey(e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); }
   }
-
-  const currentMode = STUDY_MODES.find((m) => m.id === studyMode);
 
   return (
-    <div className="border-t border-surface-border bg-surface px-4 pb-4 pt-3">
-      {/* Study mode bar */}
-      {studyMode && (
-        <div className="flex items-center gap-2 mb-2 px-1">
-          <span className="text-xs text-accent-hover">{currentMode?.label ?? studyMode}</span>
-          <button onClick={() => onStudyModeChange(null)} className="text-xs text-text-dim hover:text-rose-DEFAULT transition">× clear</button>
-        </div>
-      )}
-
-      <div className="flex flex-col bg-surface-card border border-surface-border rounded-2xl overflow-hidden focus-within:border-accent/50 transition">
-        <textarea
-          ref={textareaRef}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={onKeyDown}
-          disabled={disabled}
-          placeholder={disabled ? "Thinking…" : "Message Jarvis… (Shift+Enter for new line, /image to generate an image)"}
-          rows={1}
-          className="w-full bg-transparent px-4 pt-3 pb-2 text-sm text-text placeholder:text-text-dim resize-none outline-none disabled:opacity-50 max-h-48 overflow-y-auto"
-          style={{ scrollbarWidth: "thin" }}
-        />
-
-        <div className="flex items-center justify-between px-3 pb-2">
-          <div className="flex items-center gap-1">
-            {/* Study mode picker */}
-            <div className="relative">
-              <button
-                onClick={() => setShowModes((v) => !v)}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs text-text-muted hover:text-text hover:bg-surface-hover transition"
-              >
-                📚 Study mode
-                <span className="text-text-dim">▾</span>
+    <div className="px-4 pb-6 pt-2">
+      <div className="max-w-chat mx-auto">
+        <div className="flex flex-col bg-l-card dark:bg-d-card border border-l-border dark:border-d-border rounded-2xl shadow-sm focus-within:border-l-muted dark:focus-within:border-d-muted transition overflow-hidden">
+          <textarea ref={ref} value={text} onChange={(e) => setText(e.target.value)} onKeyDown={onKey}
+            disabled={disabled && !isRecording} rows={1}
+            placeholder={isRecording ? "Listening... press mic again to stop" : "Message Jarvis... (/image to generate a picture)"}
+            className="w-full bg-transparent px-4 pt-3.5 pb-2 text-sm text-l-text dark:text-d-text placeholder:text-l-dim dark:placeholder:text-d-dim resize-none outline-none max-h-44 overflow-y-auto"
+          />
+          <div className="flex items-center justify-between px-3 pb-2.5">
+            <div className="flex items-center gap-1">
+              <button type="button" onClick={onToggleMic}
+                title={isRecording ? "Stop recording" : "Start voice input"}
+                className={"p-2 rounded-xl transition " + (isRecording ? "bg-red-500 text-white recording-pulse" : "text-l-muted dark:text-d-muted hover:bg-l-hover dark:hover:bg-d-hover")}>
+                {isRecording ? (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+                ) : (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <rect x="9" y="2" width="6" height="12" rx="3"/>
+                    <path d="M5 10a7 7 0 0 0 14 0M12 19v3M9 22h6"/>
+                  </svg>
+                )}
               </button>
-              {showModes && (
-                <div className="absolute bottom-full left-0 mb-2 w-52 bg-surface-card border border-surface-border rounded-xl shadow-xl z-50 overflow-hidden">
-                  <button
-                    onClick={() => { onStudyModeChange(null); setShowModes(false); }}
-                    className={`w-full text-left px-3 py-2 text-sm transition ${!studyMode ? "text-accent-hover bg-accent/10" : "text-text-muted hover:text-text hover:bg-surface-hover"}`}
-                  >
-                    🤖 Normal assistant
-                  </button>
-                  {STUDY_MODES.map((m) => (
-                    <button
-                      key={m.id}
-                      onClick={() => { onStudyModeChange(m.id); setShowModes(false); }}
-                      className={`w-full text-left px-3 py-2 text-sm transition ${studyMode === m.id ? "text-accent-hover bg-accent/10" : "text-text-muted hover:text-text hover:bg-surface-hover"}`}
-                    >
-                      {m.label}
-                    </button>
-                  ))}
-                </div>
-              )}
+              <button type="button" onClick={() => { const p = window.prompt("Describe the image:"); if (p) onImageRequest(p); }}
+                title="Generate image" className="p-2 rounded-xl text-l-muted dark:text-d-muted hover:bg-l-hover dark:hover:bg-d-hover transition">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20 15l-5-5L5 20"/>
+                </svg>
+              </button>
             </div>
-
-            <button
-              onClick={() => {
-                const prompt = prompt("Describe the image you want to generate:");
-                if (prompt) onImageRequest(prompt);
-              }}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs text-text-muted hover:text-text hover:bg-surface-hover transition"
-              title="Generate an image"
-            >
-              🖼️ Image
+            <button type="button" onClick={submit} disabled={disabled || !text.trim()}
+              className="w-8 h-8 flex items-center justify-center bg-l-text dark:bg-d-text text-l-bg dark:text-d-bg rounded-lg disabled:opacity-30 transition hover:opacity-80">
+              {disabled ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              )}
             </button>
           </div>
-
-          <button
-            onClick={submit}
-            disabled={disabled || !text.trim()}
-            className="w-8 h-8 flex items-center justify-center bg-accent hover:bg-accent-hover text-white rounded-lg transition disabled:opacity-40 disabled:cursor-not-allowed text-sm"
-          >
-            {disabled ? (
-              <span className="animate-spin text-xs">⟳</span>
-            ) : (
-              <span>↑</span>
-            )}
-          </button>
         </div>
+        <p className="text-center text-xs text-l-dim dark:text-d-dim mt-2">Jarvis can make mistakes. Verify important info.</p>
       </div>
-      <p className="text-center text-xs text-text-dim mt-2">AI can make mistakes. Verify important info.</p>
     </div>
   );
 }
