@@ -16,7 +16,7 @@ const SCOPES = [
 export function getGoogleAuthUrl(state: string): string {
   const params = new URLSearchParams({
     client_id: process.env.GOOGLE_CLIENT_ID ?? "",
-    redirect_uri: `${process.env.NEXT_PUBLIC_URL ?? "http://localhost:3000"}/api/google/callback`,
+    redirect_uri: `${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/api/google/callback`,
     response_type: "code",
     scope: SCOPES,
     access_type: "offline",
@@ -34,7 +34,7 @@ export async function exchangeCodeForTokens(code: string) {
       code,
       client_id: process.env.GOOGLE_CLIENT_ID ?? "",
       client_secret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-      redirect_uri: `${process.env.NEXT_PUBLIC_URL ?? "http://localhost:3000"}/api/google/callback`,
+      redirect_uri: `${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/api/google/callback`,
       grant_type: "authorization_code",
     }),
   });

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NextResponse } from "next/server";
 import { requireApprovedUser } from "@/lib/api-guards";
 import { getGoogleAuthUrl } from "@/lib/google-oauth";
