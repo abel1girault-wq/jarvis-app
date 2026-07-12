@@ -13,7 +13,7 @@ export const maxDuration = 90;
 function isCalendarQuery(t: string) { return /calendar|schedule|appointment|event|meeting|today|tomorrow|tonight|\d+pm|\d+am|what do i have/i.test(t); }
 function isClassroomQuery(t: string) { return /homework|assignment|due|submit|classroom|course|class|teacher|grade/i.test(t); }
 
-async function buildGoogleContext(userId, msg) {
+async function buildGoogleContext(userId: string, msg: string) {
   try {
     const token = await getValidAccessToken(userId).catch(() => null);
     if (!token) return "";
@@ -39,7 +39,7 @@ async function buildGoogleContext(userId, msg) {
   } catch { return ""; }
 }
 
-async function callOneAI(apiKey, provider, model, baseUrl, msgs, systemPrompt) {
+async function callOneAI(apiKey: string, provider: string, model: string, baseUrl: string | null, msgs: {role: string; content: string}[], systemPrompt: string) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 40000);
   try {
@@ -76,7 +76,7 @@ async function callOneAI(apiKey, provider, model, baseUrl, msgs, systemPrompt) {
   } finally { clearTimeout(timer); }
 }
 
-async function runJudge(judgeKey, judgeProvider, judgeModel, judgeBaseUrl, prompt, responses) {
+async function runJudge(judgeKey: string, judgeProvider: string, judgeModel: string, judgeBaseUrl: string | null, prompt: string, responses: {name: string; text: string}[]) {
   const letters = "ABCDEFGHIJ";
   const labeled = responses.map((r,i) => ({letter:letters[i],...r}));
   const transcript = labeled.map(l => "Response "+l.letter+" ("+l.name+"):\n"+l.text).join("\n\n---\n\n");
