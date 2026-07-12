@@ -51,7 +51,7 @@ async function callOneAI(apiKey: string, provider: string, model: string, baseUr
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d?.error?.message ?? "Anthropic error "+r.status);
-      return d.content?.filter(b=>b.type==="text").map(b=>b.text).join("").trim();
+      return d.content?.filter((b: {type:string;text:string})=>b.type==="text").map((b: {type:string;text:string})=>b.text).join("").trim();
     }
     if (provider === "GOOGLE") {
       const url = "https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent";
