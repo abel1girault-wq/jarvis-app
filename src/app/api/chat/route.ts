@@ -10,8 +10,8 @@ import { STUDY_MODES } from "@/lib/models";
 export const runtime = "nodejs";
 export const maxDuration = 90;
 
-function isCalendarQuery(t) { return /calendar|schedule|appointment|event|meeting|today|tomorrow|tonight|\d+pm|\d+am|what do i have/i.test(t); }
-function isClassroomQuery(t) { return /homework|assignment|due|submit|classroom|course|class|teacher|grade/i.test(t); }
+function isCalendarQuery(t: string) { return /calendar|schedule|appointment|event|meeting|today|tomorrow|tonight|\d+pm|\d+am|what do i have/i.test(t); }
+function isClassroomQuery(t: string) { return /homework|assignment|due|submit|classroom|course|class|teacher|grade/i.test(t); }
 
 async function buildGoogleContext(userId, msg) {
   try {
