@@ -50,7 +50,7 @@ export function ChatWindow({ conversation, initialMessages, userKeys, userName }
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, streamingText]);
 
-  const sendMessage = useCallback(async (text: string, mode: string | null) => {
+  const sendMessage = useCallback(async (text: string, mode: string | null, imageBase64?: string | null) => {
     if (streaming) return;
 
     const userMsg: Message = {
@@ -70,7 +70,7 @@ export function ChatWindow({ conversation, initialMessages, userKeys, userName }
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId: conv.id, message: text, studyMode: mode }),
+        body: JSON.stringify({ conversationId: conv.id, message: text, studyMode: mode, imageBase64: imageBase64 || null }),
         signal: abortRef.current.signal,
       });
 
@@ -276,7 +276,7 @@ export function ChatWindow({ conversation, initialMessages, userKeys, userName }
       {/* Input */}
       <div className="shrink-0">
         <ChatInput
-          onSend={sendMessage}
+          onSend={(text, img) => sendMessage(text, studyMode, img)}
           onImageRequest={generateImage}
           disabled={streaming}
           studyMode={studyMode}
