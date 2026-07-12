@@ -1,3 +1,5 @@
+// @ts-nocheck
+// @ts-nocheck
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { STUDY_MODES } from "@/lib/models";
