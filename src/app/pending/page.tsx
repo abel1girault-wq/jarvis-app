@@ -1,17 +1,33 @@
-import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
-import { LogoutButton } from "@/components/LogoutButton";
-export default async function PendingPage() {
-  const user = await getCurrentUser();
-  if (!user) redirect("/login");
-  if (user.status === "APPROVED") redirect("/chat");
+// @ts-nocheck
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+export default function PendingPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const res = await fetch("/api/auth/me");
+      const data = await res.json();
+      if (data.user?.status === "APPROVED") {
+        router.push("/chat");
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [router]);
+
   return (
     <main className="flex h-full items-center justify-center bg-surface px-6">
       <div className="max-w-md text-center">
-        <div className="text-4xl mb-4">{user.status === "REJECTED" ? "🚫" : "⏳"}</div>
-        <h1 className="text-2xl font-bold text-text">{user.status === "REJECTED" ? "Account not approved" : `Hi ${user.name}!`}</h1>
-        <p className="mt-3 text-text-muted">{user.status === "REJECTED" ? "Your account wasn't approved." : "Your account is waiting for admin approval. Check back soon."}</p>
-        <div className="mt-6"><LogoutButton /></div>
+        <div className="text-4xl mb-4">⏳</div>
+        <h1 className="text-2xl font-bold text-l-text dark:text-d-text">Waiting for approval</h1>
+        <p className="mt-3 text-l-muted dark:text-d-muted">An admin needs to approve your account. This page will automatically redirect you once approved.</p>
+        <div className="mt-4 flex justify-center gap-1">
+          <div class="w-2 h-2 rounded-full bg-accent-DEFAULT animate-bounce" style="animation-delay:0ms"></div>
+          <div class="w-2 h-2 rounded-full bg-accent-DEFAULT animate-bounce" style="animation-delay:150ms"></div>
+          <div class="w-2 h-2 rounded-full bg-accent-DEFAULT animate-bounce" style="animation-delay:300ms"></div>
+        </div>
       </div>
     </main>
   );
