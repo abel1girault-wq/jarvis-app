@@ -90,3 +90,13 @@ export const studyNotes = pgTable("study_notes", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
 }, (t) => ({ userIdx: index("notes_user_idx").on(t.userId) }));
+
+
+export const passwordResets = pgTable("password_resets", {
+  id: text("id").primaryKey().$defaultFn(cuid),
+  token: text("token").notNull().unique(),
+  email: text("email").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  used: boolean("used").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
