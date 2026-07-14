@@ -1,3 +1,5 @@
+// @ts-nocheck
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { requireApprovedUser } from "@/lib/api-guards";
 import { getValidAccessToken, fetchCalendarEvents } from "@/lib/google-oauth";

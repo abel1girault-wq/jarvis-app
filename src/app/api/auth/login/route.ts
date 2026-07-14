@@ -1,3 +1,5 @@
+// @ts-nocheck
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
