@@ -36,7 +36,7 @@
 
 .streaming-cursor::after {
   content: "▋";
-  @apply text-accent;
+  color: #3b82f6;
   animation: blink 1s step-end infinite;
 }
 
