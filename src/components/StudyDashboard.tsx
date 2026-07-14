@@ -126,7 +126,7 @@ export function StudyDashboard({ userName }: { userName: string }) {
 
         {googleConnected && (
           <div className="mb-6 flex items-center gap-2 text-sm text-emerald-DEFAULT">
-            <span>✓</span>
+            <span></span>
             <span>Connected as {googleEmail}</span>
           </div>
         )}
@@ -134,9 +134,9 @@ export function StudyDashboard({ userName }: { userName: string }) {
         {/* Tabs */}
         <div className="flex gap-1 mb-6 bg-surface-card border border-surface-border rounded-xl p-1 w-fit">
           {[
-            { id: "classroom", label: "📚 Classroom" },
-            { id: "calendar", label: "📅 Calendar" },
-            { id: "tools", label: "🧠 Study tools" },
+            { id: "classroom", label: " Classroom" },
+            { id: "calendar", label: " Calendar" },
+            { id: "tools", label: " Study tools" },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -153,7 +153,7 @@ export function StudyDashboard({ userName }: { userName: string }) {
           <div>
             {!googleConnected ? (
               <div className="text-center py-12 text-text-muted">
-                <div className="text-4xl mb-3">📚</div>
+                <div className="text-4xl mb-3"></div>
                 <p>Connect Google to see your assignments</p>
               </div>
             ) : loadingCourses ? (
@@ -222,7 +222,7 @@ export function StudyDashboard({ userName }: { userName: string }) {
 
                 {courses.length === 0 && !loadingCourses && (
                   <div className="text-center py-8 text-text-muted">
-                    <div className="text-3xl mb-2">🎓</div>
+                    <div className="text-3xl mb-2"></div>
                     <p>No active courses found in Google Classroom</p>
                   </div>
                 )}
@@ -236,7 +236,7 @@ export function StudyDashboard({ userName }: { userName: string }) {
           <div>
             {!googleConnected ? (
               <div className="text-center py-12 text-text-muted">
-                <div className="text-4xl mb-3">📅</div>
+                <div className="text-4xl mb-3"></div>
                 <p>Connect Google to see your calendar</p>
               </div>
             ) : loadingEvents ? (
@@ -251,7 +251,7 @@ export function StudyDashboard({ userName }: { userName: string }) {
                         <div key={e.id} className="bg-accent/10 border border-accent/30 rounded-xl px-4 py-3 flex items-center justify-between">
                           <div>
                             <p className="text-sm font-medium text-text">{e.title}</p>
-                            {e.location && <p className="text-xs text-text-dim mt-0.5">📍 {e.location}</p>}
+                            {e.location && <p className="text-xs text-text-dim mt-0.5"> {e.location}</p>}
                           </div>
                           <span className="text-xs text-accent-hover shrink-0 ml-4">{formatEventTime(e.start, e.allDay)}</span>
                         </div>
@@ -269,7 +269,7 @@ export function StudyDashboard({ userName }: { userName: string }) {
                         <div key={e.id} className="bg-surface-card border border-surface-border rounded-xl px-4 py-3 flex items-center justify-between">
                           <div>
                             <p className="text-sm text-text">{e.title}</p>
-                            {e.location && <p className="text-xs text-text-dim mt-0.5">📍 {e.location}</p>}
+                            {e.location && <p className="text-xs text-text-dim mt-0.5"> {e.location}</p>}
                           </div>
                           <span className="text-xs text-text-muted shrink-0 ml-4">{formatEventTime(e.start, e.allDay)}</span>
                         </div>

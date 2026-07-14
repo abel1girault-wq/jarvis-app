@@ -6,14 +6,14 @@ import { randomUUID } from "crypto";
 
 function cuid() { return randomUUID(); }
 
-// ─── Enums ────────────────────────────────────────────────────────────────────
+//  Enums 
 export const accountStatusEnum = pgEnum("account_status", ["PENDING", "APPROVED", "REJECTED"]);
 export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
 export const providerEnum = pgEnum("provider", ["OPENAI", "ANTHROPIC", "GOOGLE", "GROQ", "CUSTOM"]);
 export const messageRoleEnum = pgEnum("message_role", ["user", "assistant", "system"]);
 export const messageTypeEnum = pgEnum("message_type", ["text", "image", "error"]);
 
-// ─── Users ────────────────────────────────────────────────────────────────────
+//  Users 
 export const users = pgTable("users", {
   id: text("id").primaryKey().$defaultFn(cuid),
   email: text("email").notNull().unique(),
@@ -24,7 +24,7 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// ─── API Keys ─────────────────────────────────────────────────────────────────
+//  API Keys 
 export const apiKeys = pgTable("api_keys", {
   id: text("id").primaryKey().$defaultFn(cuid),
   provider: providerEnum("provider").notNull(),
@@ -36,7 +36,7 @@ export const apiKeys = pgTable("api_keys", {
   userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
 }, (t) => ({ upl: uniqueIndex("api_keys_upl").on(t.userId, t.provider, t.label) }));
 
-// ─── Conversations ────────────────────────────────────────────────────────────
+//  Conversations 
 export const conversations = pgTable("conversations", {
   id: text("id").primaryKey().$defaultFn(cuid),
   title: text("title").notNull().default("New chat"),
@@ -49,7 +49,7 @@ export const conversations = pgTable("conversations", {
   userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
 }, (t) => ({ userIdx: index("conv_user_idx").on(t.userId) }));
 
-// ─── Messages ─────────────────────────────────────────────────────────────────
+//  Messages 
 export type MessageContent =
   | { type: "text"; text: string }
   | { type: "image"; url: string; prompt: string; revised?: string }
@@ -64,7 +64,7 @@ export const messages = pgTable("messages", {
   conversationId: text("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
 }, (t) => ({ convIdx: index("msg_conv_idx").on(t.conversationId) }));
 
-// ─── Google Tokens ────────────────────────────────────────────────────────────
+//  Google Tokens 
 export const googleTokens = pgTable("google_tokens", {
   id: text("id").primaryKey().$defaultFn(cuid),
   accessToken: text("access_token").notNull(),
@@ -77,7 +77,7 @@ export const googleTokens = pgTable("google_tokens", {
   userId: text("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
 });
 
-// ─── Study Notes ──────────────────────────────────────────────────────────────
+//  Study Notes 
 export const studyNotes = pgTable("study_notes", {
   id: text("id").primaryKey().$defaultFn(cuid),
   title: text("title").notNull(),

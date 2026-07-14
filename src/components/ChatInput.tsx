@@ -82,7 +82,7 @@ export function ChatInput({ onSend, onImageRequest, disabled, isRecording, onTog
               <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
               <button type="button" onClick={() => { const p = window.prompt("Describe the image to generate:"); if (p) onImageRequest(p); }}
                 title="Generate AI image" className="p-2 rounded-xl text-l-muted dark:text-d-muted hover:bg-l-hover dark:hover:bg-d-hover transition text-xs">
-                🎨
+                
               </button>
             </div>
             <button type="button" onClick={submit} disabled={disabled || (!text.trim() && !imageBase64)}

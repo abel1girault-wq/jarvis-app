@@ -91,7 +91,7 @@ export function SettingsClient({ user }: { user: User }) {
 
         {/* Tabs */}
         <div className="flex gap-1 mb-6 bg-surface-card border border-surface-border rounded-xl p-1 w-fit">
-          {[{ id: "keys", label: "🔑 API Keys" }, { id: "google", label: "🔗 Google" }].map((t) => (
+          {[{ id: "keys", label: " API Keys" }, { id: "google", label: " Google" }].map((t) => (
             <button key={t.id} onClick={() => setTab(t.id as "keys" | "google")} className={`px-4 py-2 rounded-lg text-sm font-medium transition ${tab === t.id ? "bg-accent/20 text-accent-hover" : "text-text-muted hover:text-text"}`}>{t.label}</button>
           ))}
         </div>
@@ -209,9 +209,9 @@ export function SettingsClient({ user }: { user: User }) {
             <div className="bg-surface-card border border-surface-border rounded-xl p-5">
               <h3 className="font-medium text-text text-sm mb-2">What Jarvis can access</h3>
               <ul className="space-y-2 text-sm text-text-muted">
-                {["📅 Read your Google Calendar events (read-only)", "📚 See your Google Classroom courses and assignments (read-only)", "📧 Your name and email to identify your account"].map((item) => (
+                {[" Read your Google Calendar events (read-only)", " See your Google Classroom courses and assignments (read-only)", " Your name and email to identify your account"].map((item) => (
                   <li key={item} className="flex items-start gap-2">
-                    <span className="text-emerald-DEFAULT mt-0.5">✓</span>
+                    <span className="text-emerald-DEFAULT mt-0.5"></span>
                     <span>{item.slice(3)}</span>
                   </li>
                 ))}

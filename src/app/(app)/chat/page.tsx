@@ -9,7 +9,7 @@ export default async function ChatIndexPage() {
   if (latest) redirect(`/chat/${latest.id}`);
   return (
     <div className="flex h-full flex-col items-center justify-center text-center px-6">
-      <div className="text-5xl mb-4">✦</div>
+      <div className="text-5xl mb-4"></div>
       <h2 className="text-xl font-semibold text-text">Start a conversation</h2>
       <p className="mt-2 text-text-muted text-sm max-w-sm">Click <strong className="text-text">New chat</strong> in the sidebar to begin. Ask anything.</p>
     </div>

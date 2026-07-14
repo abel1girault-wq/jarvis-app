@@ -58,7 +58,7 @@ export function ModelSelector({ provider, model, apiKeyId, userKeys, conversatio
       >
         <span className="w-2 h-2 rounded-full" style={{ backgroundColor: providerColor }} />
         <span className="max-w-[120px] truncate">{shortName}</span>
-        <span className="text-text-dim">▾</span>
+        <span className="text-text-dim"></span>
       </button>
 
       {open && (

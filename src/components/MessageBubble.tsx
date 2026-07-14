@@ -65,7 +65,7 @@ export function MessageBubble({ message, isStreaming }: { message: Message; isSt
   return (
     <div className="flex gap-3 px-4 py-3 message-enter group">
       <div className="w-7 h-7 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center shrink-0 mt-0.5">
-        <span className="text-accent text-xs font-bold">✦</span>
+        <span className="text-accent text-xs font-bold"></span>
       </div>
       <div className="flex-1 min-w-0 pt-0.5">
         <div

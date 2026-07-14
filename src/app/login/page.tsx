@@ -22,7 +22,7 @@ export default function LoginPage() {
     <main className="flex h-full items-center justify-center bg-surface px-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="text-3xl mb-2">✦</div>
+          <div className="text-3xl mb-2"></div>
           <h1 className="text-2xl font-bold text-text">Welcome back</h1>
         </div>
         <div className="bg-surface-card border border-surface-border rounded-xl p-6">

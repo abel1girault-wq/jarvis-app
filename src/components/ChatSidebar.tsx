@@ -48,7 +48,7 @@ export function ChatSidebar({ user }: { user: User }) {
 
   if (collapsed) return (
     <aside className="flex flex-col items-center w-12 border-r border-surface-border bg-surface-raised py-4 gap-4 shrink-0">
-      <button onClick={() => setCollapsed(false)} className="text-text-muted hover:text-text transition text-lg">☰</button>
+      <button onClick={() => setCollapsed(false)} className="text-text-muted hover:text-text transition text-lg"></button>
       <button onClick={newChat} className="text-accent hover:text-accent-hover transition text-xl font-light">+</button>
     </aside>
   );
@@ -56,7 +56,7 @@ export function ChatSidebar({ user }: { user: User }) {
   return (
     <aside className="flex flex-col w-64 border-r border-surface-border bg-surface-raised overflow-hidden shrink-0">
       <div className="flex items-center justify-between px-4 py-3 border-b border-surface-border shrink-0">
-        <div className="flex items-center gap-2"><span className="text-base">✦</span><span className="font-semibold text-text text-sm">Jarvis</span></div>
+        <div className="flex items-center gap-2"><span className="text-base"></span><span className="font-semibold text-text text-sm">Jarvis</span></div>
         <button onClick={() => setCollapsed(true)} className="text-text-dim hover:text-text-muted transition text-xs px-1">‹</button>
       </div>
 
@@ -67,10 +67,10 @@ export function ChatSidebar({ user }: { user: User }) {
       </div>
 
       <div className="px-3 pb-2 space-y-0.5 shrink-0">
-        {[{ href: "/study", label: "📚 Study tools" }, { href: "/settings", label: "⚙️ Settings" }].map((l) => (
+        {[{ href: "/study", label: " Study tools" }, { href: "/settings", label: " Settings" }].map((l) => (
           <Link key={l.href} href={l.href} className={`flex items-center px-3 py-2 rounded-lg text-sm transition ${pathname.startsWith(l.href) ? "bg-surface-hover text-text" : "text-text-muted hover:text-text hover:bg-surface-hover"}`}>{l.label}</Link>
         ))}
-        {user.role === "ADMIN" && <Link href="/admin" className={`flex items-center px-3 py-2 rounded-lg text-sm transition ${pathname.startsWith("/admin") ? "bg-surface-hover text-text" : "text-text-muted hover:text-text hover:bg-surface-hover"}`}>🛡️ Admin</Link>}
+        {user.role === "ADMIN" && <Link href="/admin" className={`flex items-center px-3 py-2 rounded-lg text-sm transition ${pathname.startsWith("/admin") ? "bg-surface-hover text-text" : "text-text-muted hover:text-text hover:bg-surface-hover"}`}> Admin</Link>}
       </div>
 
       <div className="h-px bg-surface-border mx-3 mb-1 shrink-0" />

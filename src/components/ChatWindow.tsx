@@ -149,7 +149,7 @@ export function ChatWindow({ conversation, initialMessages, userKeys, userName }
     const userMsg: Message = {
       id: `tmp-img-${Date.now()}`,
       role: "user",
-      content: { type: "text", text: `🖼️ Generate image: ${prompt}` },
+      content: { type: "text", text: ` Generate image: ${prompt}` },
       createdAt: new Date().toISOString(),
     };
     setMessages((prev) => [...prev, userMsg]);
@@ -241,7 +241,7 @@ export function ChatWindow({ conversation, initialMessages, userKeys, userName }
       <div className="flex-1 overflow-y-auto py-4">
         {allMessages.length === 0 && !streaming && (
           <div className="flex flex-col items-center justify-center h-full text-center px-6 pb-20">
-            <div className="text-4xl mb-4">✦</div>
+            <div className="text-4xl mb-4"></div>
             <h2 className="text-lg font-semibold text-text">Hi {userName.split(" ")[0]}! What can I help with?</h2>
             <p className="mt-2 text-sm text-text-muted max-w-sm">Ask anything. Use <code className="bg-surface-raised px-1 rounded text-xs">/image</code> to generate images, or pick a study mode below.</p>
             <div className="mt-6 flex flex-wrap justify-center gap-2 max-w-lg">
@@ -268,7 +268,7 @@ export function ChatWindow({ conversation, initialMessages, userKeys, userName }
       {streaming && (
         <div className="flex justify-center pb-2 shrink-0">
           <button onClick={stopStreaming} className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-card border border-surface-border rounded-lg text-xs text-text-muted hover:text-rose-DEFAULT hover:border-rose-DEFAULT/40 transition">
-            ⬛ Stop generating
+             Stop generating
           </button>
         </div>
       )}

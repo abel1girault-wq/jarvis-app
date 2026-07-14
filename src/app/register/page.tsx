@@ -22,7 +22,7 @@ export default function RegisterPage() {
     <main className="flex h-full items-center justify-center bg-surface px-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="text-3xl mb-2">✦</div>
+          <div className="text-3xl mb-2"></div>
           <h1 className="text-2xl font-bold text-text">Create your account</h1>
           <p className="mt-1 text-sm text-text-muted">Accounts need admin approval before sign-in.</p>
         </div>
