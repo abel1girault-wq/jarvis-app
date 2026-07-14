@@ -100,3 +100,25 @@ export const passwordResets = pgTable("password_resets", {
   used: boolean("used").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const userChoices = pgTable("user_choices", {
+  id: text("id").primaryKey().$defaultFn(cuid),
+  chosenProvider: text("chosen_provider").notNull(),
+  chosenModel: text("chosen_model").notNull(),
+  rejectedProvider: text("rejected_provider"),
+  rejectedModel: text("rejected_model"),
+  prompt: text("prompt").notNull(),
+  conversationId: text("conversation_id").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+}, (t) => ({ userIdx: index("choices_user_idx").on(t.userId) }));
+
+export const userPreferences = pgTable("user_preferences", {
+  id: text("id").primaryKey().$defaultFn(cuid),
+  judgeProvider: text("judge_provider").notNull().default("GOOGLE"),
+  judgeModel: text("judge_model").notNull().default("gemini-2.5-flash"),
+  preferenceProfile: text("preference_profile"),
+  totalChoices: text("total_choices").notNull().default("0"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  userId: text("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
+});
