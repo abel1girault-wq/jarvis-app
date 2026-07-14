@@ -111,12 +111,12 @@ export async function POST(req) {
       if (googleKey) {
         // Try Gemini 2.0 flash image generation (free tier)
         const imgRes = await fetch(
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent",
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent",
           {
             method: "POST",
             headers: { "Content-Type": "application/json", "x-goog-api-key": googleKey },
             body: JSON.stringify({
-              contents: [{ parts: [{ text: "Generate a photorealistic image of: " + userMessage }] }],
+              contents: [{ parts: [{ text: userMessage }] }],
               generationConfig: { responseModalities: ["IMAGE", "TEXT"] }
             }),
           }
