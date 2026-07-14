@@ -98,6 +98,21 @@ export async function POST(req) {
   const conversationId = body?.conversationId;
   const userMessage = body?.message?.trim();
   const studyModeId = body?.studyMode ?? null;
+
+  // Auto-detect image requests
+  const imageKeywords = /^(make|create|generate|draw|show|give me|i want|can you make|can you create|can you draw).{0,30}(image|photo|picture|pic|drawing|illustration|portrait)/i;
+  if (imageKeywords.test(userMessage)) {
+    const imageRes = await fetch(new URL("/api/image", req.url).toString(), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", cookie: req.headers.get("cookie") || "" },
+      body: JSON.stringify({ prompt: userMessage, conversationId }),
+    });
+    const imageData = await imageRes.json();
+    if (imageRes.ok && imageData.url) {
+      await db.insert(messages).values({ conversationId, role: "user", content: { type: "text", text: userMessage } });
+      return NextResponse.json({ image: true, url: imageData.url });
+    }
+  }
   if (!conversationId || !userMessage) return new Response(JSON.stringify({error:"Missing fields."}), {status:400});
 
   const [conv] = await db.select().from(conversations).where(and(eq(conversations.id, conversationId), eq(conversations.userId, user.id))).limit(1);
