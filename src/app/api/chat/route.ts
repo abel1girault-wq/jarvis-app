@@ -135,6 +135,21 @@ export async function POST(req) {
       }
     } catch(e) { /* fall through to text */ }
   }
+
+
+  // Image detection - uses Pollinations AI (free, no key needed)
+  const imgMatch = /^(make|create|generate|draw|show|give me|i want).{0,50}(image|photo|picture|pic|baby|dog|cat|sunset|person|car|house)/i.test(userMessage);
+  if (imgMatch) {
+    const prompt = encodeURIComponent(userMessage);
+    const imageUrl = "https://image.pollinations.ai/prompt/" + prompt + "?width=1024&height=1024&nologo=true";
+    await db.insert(messages).values([
+      { conversationId, role: "user", content: { type: "text", text: userMessage } },
+      { conversationId, role: "assistant", content: { type: "image", url: imageUrl, prompt: userMessage } },
+    ]);
+    await db.update(conversations).set({ title: userMessage.slice(0, 60), updatedAt: new Date() }).where(eq(conversations.id, conversationId));
+    return new Response(JSON.stringify({ image: true, url: imageUrl }), { headers: { "Content-Type": "application/json" } });
+  }
+
   if (!conversationId || !userMessage) return new Response(JSON.stringify({error:"Missing fields."}), {status:400});
 
   const [conv] = await db.select().from(conversations).where(and(eq(conversations.id, conversationId), eq(conversations.userId, user.id))).limit(1);
