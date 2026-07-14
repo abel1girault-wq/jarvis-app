@@ -102,16 +102,33 @@ export async function POST(req) {
   // Auto-detect image requests
   const imageKeywords = /^(make|create|generate|draw|show|give me|i want|can you make|can you create|can you draw).{0,30}(image|photo|picture|pic|drawing|illustration|portrait)/i;
   if (imageKeywords.test(userMessage)) {
-    const imageRes = await fetch(new URL("/api/image", req.url).toString(), {
-      method: "POST",
-      headers: { "Content-Type": "application/json", cookie: req.headers.get("cookie") || "" },
-      body: JSON.stringify({ prompt: userMessage, conversationId }),
-    });
-    const imageData = await imageRes.json();
-    if (imageRes.ok && imageData.url) {
-      await db.insert(messages).values({ conversationId, role: "user", content: { type: "text", text: userMessage } });
-      return NextResponse.json({ image: true, url: imageData.url });
-    }
+    try {
+      let googleKey = process.env.GOOGLE_AI_KEY || "";
+      if (!googleKey) {
+        const [k] = await db.select().from(apiKeys).where(and(eq(apiKeys.userId, user.id), eq(apiKeys.provider, "GOOGLE"))).limit(1);
+        if (k) googleKey = decrypt(k.encryptedKey);
+      }
+      if (googleKey) {
+        const imgRes = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-goog-api-key": googleKey },
+            body: JSON.stringify({ instances: [{ prompt: userMessage }], parameters: { sampleCount: 1, aspectRatio: "1:1" } }),
+          }
+        );
+        const imgData = await imgRes.json();
+        if (imgRes.ok && imgData.predictions?.[0]?.bytesBase64Encoded) {
+          const imageUrl = "data:image/png;base64," + imgData.predictions[0].bytesBase64Encoded;
+          await db.insert(messages).values([
+            { conversationId, role: "user", content: { type: "text", text: userMessage } },
+            { conversationId, role: "assistant", content: { type: "image", url: imageUrl, prompt: userMessage } },
+          ]);
+          await db.update(conversations).set({ updatedAt: new Date() }).where(eq(conversations.id, conversationId));
+          return new Response(JSON.stringify({ image: true, url: imageUrl }), { headers: { "Content-Type": "application/json" } });
+        }
+      }
+    } catch(e) { /* fall through to text */ }
   }
   if (!conversationId || !userMessage) return new Response(JSON.stringify({error:"Missing fields."}), {status:400});
 
