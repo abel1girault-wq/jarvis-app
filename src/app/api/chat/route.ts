@@ -109,17 +109,22 @@ export async function POST(req) {
         if (k) googleKey = decrypt(k.encryptedKey);
       }
       if (googleKey) {
+        // Try Gemini 2.0 flash image generation (free tier)
         const imgRes = await fetch(
-          "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent",
           {
             method: "POST",
             headers: { "Content-Type": "application/json", "x-goog-api-key": googleKey },
-            body: JSON.stringify({ instances: [{ prompt: userMessage }], parameters: { sampleCount: 1, aspectRatio: "1:1" } }),
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: "Generate a photorealistic image of: " + userMessage }] }],
+              generationConfig: { responseModalities: ["IMAGE", "TEXT"] }
+            }),
           }
         );
         const imgData = await imgRes.json();
-        if (imgRes.ok && imgData.predictions?.[0]?.bytesBase64Encoded) {
-          const imageUrl = "data:image/png;base64," + imgData.predictions[0].bytesBase64Encoded;
+        const imgPart = imgData.candidates?.[0]?.content?.parts?.find((p) => p.inlineData);
+        if (imgRes.ok && imgPart?.inlineData?.data) {
+          const imageUrl = "data:image/png;base64," + imgPart.inlineData.data;
           await db.insert(messages).values([
             { conversationId, role: "user", content: { type: "text", text: userMessage } },
             { conversationId, role: "assistant", content: { type: "image", url: imageUrl, prompt: userMessage } },
