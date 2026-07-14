@@ -59,7 +59,7 @@ export function ChatInput({ onSend, onImageRequest, disabled, isRecording, onTog
           )}
           <textarea ref={textRef} value={text} onChange={(e) => setText(e.target.value)} onKeyDown={onKey}
             disabled={disabled && !isRecording} rows={1}
-            placeholder={isRecording ? "Listening... press mic again to stop" : "Message Jarvis... (/image to generate a picture)"}
+            placeholder={isRecording ? "Listening..." : "Message Jarvis..."}
             className="w-full bg-transparent px-4 pt-3.5 pb-2 text-sm text-l-text dark:text-d-text placeholder:text-l-dim dark:placeholder:text-d-dim resize-none outline-none max-h-44 overflow-y-auto"
           />
           <div className="flex items-center justify-between px-3 pb-2.5">
